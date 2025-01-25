@@ -1,7 +1,7 @@
 import { AlignJustify } from 'lucide-react'
 import React from 'react'
 
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '../ui/sheet'
 import { Navigation } from './navigation'
 
 export function MobileNavigation() {
@@ -12,12 +12,12 @@ export function MobileNavigation() {
       </SheetTrigger>
       <SheetContent>
         <div className="flex h-full flex-col items-center justify-between py-8">
-          <div className="flex flex-col items-center gap-y-32">
+          <SheetTitle className="flex flex-col items-center gap-y-32 font-medium text-custom-green">
             <Navigation
               containerStyles="flex flex-col items-center gap-y-8"
               linkStyles="text-1xl"
             />
-          </div>
+          </SheetTitle>
         </div>
       </SheetContent>
     </Sheet>

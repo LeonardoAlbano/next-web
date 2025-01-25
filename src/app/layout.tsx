@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br" className={poppins.variable}>
       <body className="font-sans">
-        <div className="mx-auto max-w-screen-lg h-screen flex flex-col">
+        <div className="mx-auto max-w-screen-lg h-screen flex flex-col space-y-5">
           <Header />
           <main className="flex-grow">{children}</main>
         </div>

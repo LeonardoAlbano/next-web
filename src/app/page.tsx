@@ -1,22 +1,27 @@
+import { PlusCircleIcon } from 'lucide-react'
+
 import { CardHero } from '@/components/card-hero'
-import { ProjectFormDialog } from '@/components/project-form-dialog'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
   return (
-    <main className="h-screen border border-red-400 space-y-6">
-      <section className="border border-red-400">
-        <h1 className="text-4xl font-semibold text-center text-custom-green">
+    <main className="h-screen borderspace-y-6 space-y-6 mx-10">
+      <section className="">
+        <h1 className="text-4xl font-semibold text-center text-custom-green my-10">
           Portfólio de Projetos
         </h1>
       </section>
 
-      <section className="border border-red-500">
+      <section>
         <div className="text-end">
-          <ProjectFormDialog />
+          <Button>
+            <PlusCircleIcon size="8" />
+            Adicionar novo projeto
+          </Button>
         </div>
       </section>
 
-      <section className="mx-20">
+      <section>
         <CardHero />
       </section>
     </main>

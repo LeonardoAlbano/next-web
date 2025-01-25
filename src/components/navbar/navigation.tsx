@@ -13,9 +13,9 @@ interface NavigationProps {
 
 const links = [
   { path: '/', name: 'tudo' },
-  { path: '/segmento', name: 'Segmento de negócio' },
-  { path: '/tecnologia', name: 'Tecnologias' },
-  { path: '/plataforma', name: 'Plataforma' },
+  { path: '/segment', name: 'Segmento de negócio' },
+  { path: '/tecnolog', name: 'Tecnologias' },
+  { path: '/plataform', name: 'Plataforma' },
 ]
 
 export function Navigation({
