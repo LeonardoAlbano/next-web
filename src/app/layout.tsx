@@ -1,6 +1,15 @@
 import './globals.css'
 
+import { Poppins } from '@next/font/google'
 import type { Metadata } from 'next'
+
+import { Header } from '@/components/header'
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+})
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -13,8 +22,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="pt-br" className={poppins.variable}>
+      <body className="font-sans">
+        <div className="mx-auto max-w-screen-lg h-screen flex flex-col">
+          <Header />
+          <main className="flex-grow">{children}</main>
+        </div>
+      </body>
     </html>
   )
 }
