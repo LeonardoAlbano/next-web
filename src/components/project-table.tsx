@@ -1,6 +1,6 @@
 'use client'
 
-import { Pencil, Search, Trash2 } from 'lucide-react'
+import { Pencil, PlusCircleIcon, Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
@@ -16,9 +16,12 @@ import {
 } from '@/components/ui/table'
 import { projects } from '@/data/projects'
 
+import { ProjectForm } from './project-form'
+import { Dialog, DialogTrigger } from './ui/dialog'
 import { Input } from './ui/input'
 
 export function ProjectTable() {
+  const [open, setOpen] = useState(false)
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
 
   const toggleRow = (id: string) => {
@@ -42,12 +45,16 @@ export function ProjectTable() {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
-        <Button
-          variant="default"
-          className="bg-emerald-500 hover:bg-emerald-600"
-        >
-          + Novo Projeto
-        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <PlusCircleIcon className="mr-2 h-4 w-4" />
+              Novo projeto
+            </Button>
+          </DialogTrigger>
+          <ProjectForm open={open} onOpenChange={setOpen} />
+        </Dialog>
+
         <div className="relative w-72">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
             <Search className="w-4 h-4" />

@@ -11,6 +11,7 @@ export default {
     extend: {
       colors: {
         'custom-green': '#28AC93',
+        'custom-muted-foreground': '#646466',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
