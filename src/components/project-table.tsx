@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { projects } from '@/data/projects'
+import type { Project } from '@/types/project'
 
 import { ProjectForm } from './project-form'
 import { Dialog, DialogTrigger } from './ui/dialog'
@@ -23,6 +23,7 @@ import { Input } from './ui/input'
 export function ProjectTable() {
   const [open, setOpen] = useState(false)
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
+  const [projects, setProjects] = useState<Project[]>([])
 
   const toggleRow = (id: string) => {
     const newSelected = new Set(selectedRows)
@@ -42,6 +43,22 @@ export function ProjectTable() {
     }
   }
 
+  const addProject = (newProject: Project) => {
+    setProjects([...projects, newProject])
+  }
+
+  const getStatusBadgeColor = (status: string) => {
+    const colors: { [key: string]: string } = {
+      react: 'bg-blue-100 text-blue-800',
+      nextjs: 'bg-black text-white',
+      angular: 'bg-red-100 text-red-800',
+      csharp: 'bg-purple-100 text-purple-800',
+      reactnative: 'bg-cyan-100 text-cyan-800',
+      flutter: 'bg-sky-100 text-sky-800',
+    }
+    return colors[status] || 'bg-gray-100 text-gray-800'
+  }
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between py-4">
@@ -52,7 +69,11 @@ export function ProjectTable() {
               Novo projeto
             </Button>
           </DialogTrigger>
-          <ProjectForm open={open} onOpenChange={setOpen} />
+          <ProjectForm
+            open={open}
+            onOpenChange={setOpen}
+            onAddProject={addProject}
+          />
         </Dialog>
 
         <div className="relative w-72">
@@ -79,7 +100,7 @@ export function ProjectTable() {
               <TableHead>Projetos</TableHead>
               <TableHead>Segmento</TableHead>
               <TableHead>Plataforma</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Linguagem</TableHead>
               <TableHead className="w-24">Ações</TableHead>
             </TableRow>
           </TableHeader>
@@ -96,24 +117,12 @@ export function ProjectTable() {
                 <TableCell>{project.category}</TableCell>
                 <TableCell>{project.type}</TableCell>
                 <TableCell>
-                  <div className="flex gap-2">
-                    {project.hasEnglish && (
-                      <Badge
-                        variant="secondary"
-                        className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
-                      >
-                        English
-                      </Badge>
-                    )}
-                    {project.hasSQL && (
-                      <Badge
-                        variant="secondary"
-                        className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
-                      >
-                        SQL
-                      </Badge>
-                    )}
-                  </div>
+                  <Badge
+                    variant="secondary"
+                    className={`${getStatusBadgeColor(project.language)} hover:${getStatusBadgeColor(project.language)}`}
+                  >
+                    {project.language}
+                  </Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">

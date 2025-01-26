@@ -3,6 +3,5 @@ export interface Project {
   name: string
   category: string
   type: string
-  hasEnglish: boolean
-  hasSQL: boolean
+  language: string
 }

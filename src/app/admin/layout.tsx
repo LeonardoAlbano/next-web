@@ -3,9 +3,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return (
-    <div className="min-h-screen flex items-center flex-col px-4">
-      {children}
-    </div>
-  )
+  return <div>{children}</div>
 }

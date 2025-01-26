@@ -1,3 +1,4 @@
+import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import {
   Card,
@@ -27,18 +28,10 @@ export function CardHero() {
           aliquip ex ea commodo consequat.
         </CardDescription>
         <CardDescription className="text-center space-x-4">
-          <span className="rounded-full bg-custom-green text-white py-1.5  px-3">
-            React
-          </span>
-          <span className="rounded-full bg-custom-green text-white py-1.5  px-3">
-            React
-          </span>
-          <span className="rounded-full bg-custom-green text-white py-1.5  px-3">
-            React
-          </span>
-          <span className="rounded-full bg-custom-green text-white py-1.5  px-3">
-            React
-          </span>
+          <Badge className=" bg-custom-green py-1.5  px-3">React</Badge>
+          <Badge className=" bg-custom-green py-1.5  px-3">React</Badge>
+          <Badge className=" bg-custom-green py-1.5  px-3">React</Badge>
+          <Badge className=" bg-custom-green py-1.5  px-3">React</Badge>
         </CardDescription>
 
         <div className="flex flex-col gap-4 mx-16">

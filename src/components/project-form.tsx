@@ -9,6 +9,7 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -31,6 +32,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import type { Project } from '@/types/project'
 
 import { StepIndicator } from './step-indicator'
 import { Label } from './ui/label'
@@ -59,9 +61,14 @@ type FormValues = z.infer<typeof formSchema>
 interface ProjectFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onAddProject: (project: Project) => void
 }
 
-export function ProjectForm({ open, onOpenChange }: ProjectFormProps) {
+export function ProjectForm({
+  open,
+  onOpenChange,
+  onAddProject,
+}: ProjectFormProps) {
   const [currentStep, setCurrentStep] = useState(1)
 
   const form = useForm<FormValues>({
@@ -108,8 +115,17 @@ export function ProjectForm({ open, onOpenChange }: ProjectFormProps) {
 
   async function onSubmit(data: FormValues) {
     try {
-      console.log(data) // Aqui, você verá os dados que serão enviados
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const newProject: Project = {
+        id: Date.now().toString(),
+        name: data.title,
+        category: data.category,
+        type: data.language,
+        language: data.language,
+      }
+      onAddProject(newProject)
+      onOpenChange(false)
+      form.reset()
+      setCurrentStep(1)
     } catch (error) {
       console.error(error)
     }
@@ -342,12 +358,14 @@ export function ProjectForm({ open, onOpenChange }: ProjectFormProps) {
                   >
                     Voltar
                   </Button>
-                  <Button
-                    type="submit"
-                    className="bg-emerald-500 hover:bg-emerald-600 text-white"
-                  >
-                    Adicionar projeto
-                  </Button>
+                  <DialogClose asChild>
+                    <Button
+                      type="submit"
+                      className="bg-emerald-500 hover:bg-emerald-600 text-white"
+                    >
+                      Adicionar projeto
+                    </Button>
+                  </DialogClose>
                 </div>
               </div>
             )}
