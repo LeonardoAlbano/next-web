@@ -28,7 +28,13 @@ export default function Home() {
                 Adicionar novo projeto
               </Button>
             </DialogTrigger>
-            <ProjectForm open={open} onOpenChange={setOpen} />
+            <ProjectForm
+              open={open}
+              onOpenChange={setOpen}
+              onAddProject={function (): void {
+                throw new Error('Function not implemented.')
+              }}
+            />
           </Dialog>
         </div>
       </section>

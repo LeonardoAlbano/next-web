@@ -4,6 +4,7 @@ import { Poppins } from '@next/font/google'
 import type { Metadata } from 'next'
 
 import { Header } from '@/components/header'
+import { Providers } from '@/components/Providers'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -24,10 +25,12 @@ export default function RootLayout({
   return (
     <html lang="pt-br" className={poppins.variable}>
       <body className="font-sans">
-        <div className="mx-auto max-w-screen-lg h-screen flex flex-col space-y-5">
-          <Header />
-          <main className="flex-grow">{children}</main>
-        </div>
+        <Providers>
+          <div className="mx-auto max-w-screen-lg h-screen flex flex-col space-y-5">
+            <Header />
+            <main className="flex-grow">{children}</main>
+          </div>
+        </Providers>
       </body>
     </html>
   )

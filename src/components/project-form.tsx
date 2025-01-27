@@ -1,11 +1,13 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { registerForm } from '@/api/register-form'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -100,7 +102,6 @@ export function ProjectForm({
       'category',
     ])
     if (isValid) {
-      // Reset the fields of the second step
       form.setValue('images', [])
       form.setValue('technicalDetails', '')
       form.setValue('statistics', '')
@@ -113,8 +114,24 @@ export function ProjectForm({
     setCurrentStep(currentStep - 1)
   }
 
+  const { mutateAsync: registerFormFn } = useMutation({
+    mutationFn: registerForm,
+  })
+
   async function onSubmit(data: FormValues) {
     try {
+      await registerFormFn({
+        title: data.title,
+        description: data.description,
+        projectUrl: data.projectUrl,
+        language: data.language,
+        category: data.category,
+        images: data.images || [],
+        technicalDetails: data.technicalDetails || '',
+        statistics: data.statistics || '',
+        documentation: data.documentation || '',
+      })
+
       const newProject: Project = {
         name: data.title,
         category: data.category,
@@ -275,7 +292,7 @@ export function ProjectForm({
                             className="w-full text-emerald-500 border-emerald-500 hover:bg-emerald-50"
                             onClick={() => {
                               field.onChange([
-                                ...(field.value || []),
+                                ...(field.value ?? []),
                                 'new-image-url',
                               ])
                             }}
@@ -304,6 +321,7 @@ export function ProjectForm({
                           placeholder="Digite os detalhes técnicos do projeto"
                           className="min-h-[100px]"
                           {...field}
+                          value={field.value ?? ''}
                         />
                       </FormControl>
                       <FormMessage />
@@ -323,6 +341,7 @@ export function ProjectForm({
                           placeholder="Digite as estatísticas do projeto"
                           className="min-h-[100px]"
                           {...field}
+                          value={field.value ?? ''}
                         />
                       </FormControl>
                       <FormMessage />
@@ -342,6 +361,7 @@ export function ProjectForm({
                           placeholder="Digite a documentação do projeto"
                           className="min-h-[100px]"
                           {...field}
+                          value={field.value ?? ''}
                         />
                       </FormControl>
                       <FormMessage />
