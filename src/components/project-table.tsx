@@ -57,6 +57,7 @@ export function ProjectTable() {
   }
 
   const addProject = (newProject: Project) => {
+    // Note: This function should be implemented to add a new project to the API
     console.log('Adding new project:', newProject)
   }
 
@@ -129,9 +130,9 @@ export function ProjectTable() {
                     onCheckedChange={() => toggleRow(project.id)}
                   />
                 </TableCell>
-                <TableCell className="font-medium">{project.name}</TableCell>
+                <TableCell className="font-medium">{project.title}</TableCell>
                 <TableCell>{project.category}</TableCell>
-                <TableCell>{project.type}</TableCell>
+                <TableCell>Aplicativo</TableCell>
                 <TableCell>
                   <Badge
                     variant="secondary"
