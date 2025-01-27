@@ -116,7 +116,6 @@ export function ProjectForm({
   async function onSubmit(data: FormValues) {
     try {
       const newProject: Project = {
-        id: Date.now().toString(),
         name: data.title,
         category: data.category,
         type: data.language,
