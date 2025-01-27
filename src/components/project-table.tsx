@@ -1,8 +1,10 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import { Pencil, PlusCircleIcon, Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
+import { getRegisterForm } from '@/api/get-register-form'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -23,7 +25,15 @@ import { Input } from './ui/input'
 export function ProjectTable() {
   const [open, setOpen] = useState(false)
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
-  const [projects, setProjects] = useState<Project[]>([])
+
+  const {
+    data: projects = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['projects'],
+    queryFn: getRegisterForm,
+  })
 
   const toggleRow = (id: string) => {
     const newSelected = new Set(selectedRows)
@@ -39,12 +49,15 @@ export function ProjectTable() {
     if (selectedRows.size === projects.length) {
       setSelectedRows(new Set())
     } else {
-      setSelectedRows(new Set(projects.map((project) => project.id)))
+      setSelectedRows(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        new Set(projects.map((project: { id: any }) => project.id)),
+      )
     }
   }
 
   const addProject = (newProject: Project) => {
-    setProjects([...projects, newProject])
+    console.log('Adding new project:', newProject)
   }
 
   const getStatusBadgeColor = (status: string) => {
@@ -56,8 +69,11 @@ export function ProjectTable() {
       reactnative: 'bg-cyan-100 text-cyan-800',
       flutter: 'bg-sky-100 text-sky-800',
     }
-    return colors[status] || 'bg-gray-100 text-gray-800'
+    return colors[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
   }
+
+  if (isLoading) return <div>Loading...</div>
+  if (isError) return <div>Error fetching projects</div>
 
   return (
     <div className="w-full">
@@ -105,7 +121,7 @@ export function ProjectTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {projects.map((project) => (
+            {projects.map((project: Project) => (
               <TableRow key={project.id}>
                 <TableCell>
                   <Checkbox

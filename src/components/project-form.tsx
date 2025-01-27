@@ -137,6 +137,7 @@ export function ProjectForm({
         category: data.category,
         type: data.language,
         language: data.language,
+        id: '',
       }
       onAddProject(newProject)
       onOpenChange(false)
