@@ -1,9 +1,11 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Pencil, PlusCircleIcon, Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
+import { deleteRegister } from '@/api/delete-register'
 import { getRegisterForm } from '@/api/get-register-form'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -25,6 +27,7 @@ import { Input } from './ui/input'
 export function ProjectTable() {
   const [open, setOpen] = useState(false)
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
+  const queryClient = useQueryClient()
 
   const {
     data: projects = [],
@@ -33,6 +36,20 @@ export function ProjectTable() {
   } = useQuery({
     queryKey: ['projects'],
     queryFn: getRegisterForm,
+  })
+
+  const deleteProjectMutation = useMutation({
+    mutationFn: deleteRegister,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
+      toast.success('Projeto excluído com sucesso.')
+    },
+    onError: (error) => {
+      console.error('Erro ao excluir projeto:', error)
+      toast.error(
+        'Houve um erro ao excluir o projeto. Por favor, tente novamente.',
+      )
+    },
   })
 
   const toggleRow = (id: string) => {
@@ -49,10 +66,7 @@ export function ProjectTable() {
     if (selectedRows.size === projects.length) {
       setSelectedRows(new Set())
     } else {
-      setSelectedRows(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        new Set(projects.map((project: { id: any }) => project.id)),
-      )
+      setSelectedRows(new Set(projects.map((project: Project) => project.id)))
     }
   }
 
@@ -73,8 +87,12 @@ export function ProjectTable() {
     return colors[status.toLowerCase()] || 'bg-gray-100 text-gray-800'
   }
 
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error fetching projects</div>
+  if (isLoading) return <div>Carregando...</div>
+  if (isError) return <div>Erro ao buscar projetos</div>
+
+  const handleDeleteProject = (id: string) => {
+    deleteProjectMutation.mutate({ id })
+  }
 
   return (
     <div className="w-full">
@@ -146,7 +164,11 @@ export function ProjectTable() {
                     <Button variant="ghost" size="icon">
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon">
+                    <Button
+                      onClick={() => handleDeleteProject(project.id)}
+                      variant="ghost"
+                      size="icon"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>

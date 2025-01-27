@@ -133,11 +133,16 @@ export function ProjectForm({
       })
 
       const newProject: Project = {
-        name: data.title,
+        title: data.title,
         category: data.category,
-        type: data.language,
         language: data.language,
         id: '',
+        description: '',
+        projectUrl: '',
+        images: '',
+        technicalDetails: '',
+        statistics: '',
+        documentation: '',
       }
       onAddProject(newProject)
       onOpenChange(false)
