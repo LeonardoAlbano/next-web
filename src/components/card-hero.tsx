@@ -13,15 +13,21 @@ import {
   CardTitle,
 } from './ui/card'
 
-export function CardHero() {
+type CardHeroProps = {
+  projects: Project[]
+}
+
+export function CardHero({ projects }: CardHeroProps) {
   const {
-    data: projects = [],
+    data: fetchedProjects = [],
     isLoading,
     isError,
   } = useQuery<Project[]>({
     queryKey: ['projects'],
     queryFn: getRegisterForm,
   })
+
+  const displayProjects = projects.length > 0 ? projects : fetchedProjects
 
   if (isLoading) return <div className="text-center py-10">Loading...</div>
   if (isError)
@@ -33,7 +39,7 @@ export function CardHero() {
 
   return (
     <div className="space-y-8">
-      {projects.map((project: Project) => (
+      {displayProjects.map((project) => (
         <Card
           key={project.id}
           className="rounded-xl drop-shadow-md px-7 py-8 flex flex-col md:flex-row md:items-center md:gap-8"
