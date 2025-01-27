@@ -3,10 +3,16 @@ export interface Project {
   title: string
   description: string
   projectUrl: string
-  language: string
-  category: string
-  images: string
-  technicalDetails: string
-  statistics: string
-  documentation: string
+  language:
+    | 'react'
+    | 'nextjs'
+    | 'angular'
+    | 'csharp'
+    | 'reactnative'
+    | 'flutter'
+  category: 'segmentbussines' | 'tecnology' | 'plataforms'
+  images: string[]
+  technicalDetails?: string
+  statistics?: string
+  documentation?: string
 }

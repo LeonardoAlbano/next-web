@@ -1,17 +1,18 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Plus } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { registerForm } from '@/api/register-form'
+import { updateRegister, type UpdateRegisterBody } from '@/api/update-register'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -40,18 +41,12 @@ import { StepIndicator } from './step-indicator'
 import { Label } from './ui/label'
 
 const formSchema = z.object({
+  id: z.string().optional(),
   title: z.string().min(1, 'Título é obrigatório'),
   description: z.string().min(1, 'Descrição é obrigatória'),
   projectUrl: z.string().url('URL inválida'),
-  language: z.enum([
-    'react',
-    'nextjs',
-    'angular',
-    'csharp',
-    'reactnative',
-    'flutter',
-  ]),
-  category: z.enum(['segmentbussines', 'tecnology', 'plataforms']),
+  language: z.string().min(1, 'Linguagem é obrigatória'),
+  category: z.string().min(1, 'Categoria é obrigatória'),
   images: z.array(z.string()).optional(),
   technicalDetails: z.string().optional(),
   statistics: z.string().optional(),
@@ -64,14 +59,19 @@ interface ProjectFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onAddProject: (project: Project) => void
+  editingProject: Project | null
+  onUpdateProject: (project: Project) => void
 }
 
 export function ProjectForm({
   open,
   onOpenChange,
   onAddProject,
+  editingProject,
+  onUpdateProject,
 }: ProjectFormProps) {
   const [currentStep, setCurrentStep] = useState(1)
+  const queryClient = useQueryClient()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -79,14 +79,20 @@ export function ProjectForm({
       title: '',
       description: '',
       projectUrl: '',
-      language: 'react',
-      category: 'segmentbussines',
+      language: '',
+      category: '',
       images: [],
       technicalDetails: '',
       statistics: '',
       documentation: '',
     },
   })
+
+  useEffect(() => {
+    if (editingProject) {
+      form.reset(editingProject)
+    }
+  }, [editingProject, form])
 
   const steps = [
     { number: 1, label: 'Informações principais' },
@@ -102,10 +108,6 @@ export function ProjectForm({
       'category',
     ])
     if (isValid) {
-      form.setValue('images', [])
-      form.setValue('technicalDetails', '')
-      form.setValue('statistics', '')
-      form.setValue('documentation', '')
       setCurrentStep(currentStep + 1)
     }
   }
@@ -116,40 +118,48 @@ export function ProjectForm({
 
   const { mutateAsync: registerFormFn } = useMutation({
     mutationFn: registerForm,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
+      toast.success('Projeto adicionado com sucesso.')
+    },
+    onError: (error) => {
+      console.error('Erro ao adicionar projeto:', error)
+      toast.error(
+        'Houve um erro ao adicionar o projeto. Por favor, tente novamente.',
+      )
+    },
+  })
+
+  const { mutateAsync: updateFormFn } = useMutation({
+    mutationFn: updateRegister,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
+      toast.success('Projeto atualizado com sucesso.')
+    },
+    onError: (error) => {
+      console.error('Erro ao atualizar projeto:', error)
+      toast.error(
+        'Houve um erro ao atualizar o projeto. Por favor, tente novamente.',
+      )
+    },
   })
 
   async function onSubmit(data: FormValues) {
     try {
-      await registerFormFn({
-        title: data.title,
-        description: data.description,
-        projectUrl: data.projectUrl,
-        language: data.language,
-        category: data.category,
-        images: data.images || [],
-        technicalDetails: data.technicalDetails || '',
-        statistics: data.statistics || '',
-        documentation: data.documentation || '',
-      })
-
-      const newProject: Project = {
-        title: data.title,
-        category: data.category,
-        language: data.language,
-        id: '',
-        description: '',
-        projectUrl: '',
-        images: '',
-        technicalDetails: '',
-        statistics: '',
-        documentation: '',
+      if (editingProject) {
+        console.log('Updating project with data:', data)
+        await updateFormFn(data as UpdateRegisterBody)
+        onUpdateProject(data as Project)
+      } else {
+        console.log('Adding new project with data:', data)
+        await registerFormFn(data as Omit<Project, 'id'>)
+        onAddProject(data as Project)
       }
-      onAddProject(newProject)
       onOpenChange(false)
       form.reset()
       setCurrentStep(1)
     } catch (error) {
-      console.error(error)
+      console.error('Error submitting form:', error)
     }
   }
 
@@ -158,7 +168,7 @@ export function ProjectForm({
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="text-3xl font-medium text-center text-emerald-500">
-            Adicionar projeto
+            {editingProject ? 'Editar projeto' : 'Adicionar projeto'}
           </DialogTitle>
           <DialogDescription className="hidden">.</DialogDescription>
           <div className="py-6">
@@ -383,14 +393,12 @@ export function ProjectForm({
                   >
                     Voltar
                   </Button>
-                  <DialogClose asChild>
-                    <Button
-                      type="submit"
-                      className="bg-emerald-500 hover:bg-emerald-600 text-white"
-                    >
-                      Adicionar projeto
-                    </Button>
-                  </DialogClose>
+                  <Button
+                    type="submit"
+                    className="bg-emerald-500 hover:bg-emerald-600 text-white"
+                  >
+                    {editingProject ? 'Salvar' : 'Adicionar projeto'}
+                  </Button>
                 </div>
               </div>
             )}

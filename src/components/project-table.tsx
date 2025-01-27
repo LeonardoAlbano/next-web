@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 
 import { deleteRegister } from '@/api/delete-register'
 import { getRegisterForm } from '@/api/get-register-form'
+import { updateRegister, type UpdateRegisterBody } from '@/api/update-register'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -26,6 +27,7 @@ import { Input } from './ui/input'
 
 export function ProjectTable() {
   const [open, setOpen] = useState(false)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
   const queryClient = useQueryClient()
 
@@ -52,6 +54,21 @@ export function ProjectTable() {
     },
   })
 
+  const updateProjectMutation = useMutation({
+    mutationFn: (project: Project) =>
+      updateRegister(project as UpdateRegisterBody),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
+      toast.success('Projeto atualizado com sucesso.')
+    },
+    onError: (error) => {
+      console.error('Erro ao atualizar projeto:', error)
+      toast.error(
+        'Houve um erro ao atualizar o projeto. Por favor, tente novamente.',
+      )
+    },
+  })
+
   const toggleRow = (id: string) => {
     const newSelected = new Set(selectedRows)
     if (newSelected.has(id)) {
@@ -73,6 +90,15 @@ export function ProjectTable() {
   const addProject = (newProject: Project) => {
     // Note: This function should be implemented to add a new project to the API
     console.log('Adding new project:', newProject)
+  }
+
+  const editProject = (project: Project) => {
+    setEditingProject(project)
+    setOpen(true)
+  }
+
+  const handleUpdateProject = (updatedProject: Project) => {
+    updateProjectMutation.mutate(updatedProject)
   }
 
   const getStatusBadgeColor = (status: string) => {
@@ -108,6 +134,8 @@ export function ProjectTable() {
             open={open}
             onOpenChange={setOpen}
             onAddProject={addProject}
+            editingProject={editingProject}
+            onUpdateProject={handleUpdateProject}
           />
         </Dialog>
 
@@ -161,7 +189,11 @@ export function ProjectTable() {
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon">
+                    <Button
+                      onClick={() => editProject(project)}
+                      variant="ghost"
+                      size="icon"
+                    >
                       <Pencil className="h-4 w-4" />
                     </Button>
                     <Button

@@ -2,22 +2,22 @@ import * as z from 'zod'
 
 export const projectFormSchema = z.object({
   title: z.string().min(2, {
-    message: 'Title must be at least 2 characters.',
+    message: 'O título deve ter pelo menos 2 caracteres.',
   }),
   description: z.string().min(10, {
-    message: 'Description must be at least 10 characters.',
+    message: 'A descrição deve ter pelo menos 10 caracteres.',
   }),
   projectUrl: z.string().url({
-    message: 'Please enter a valid URL.',
+    message: 'Por favor, insira uma URL válida.',
   }),
   languages: z.array(z.string()).min(1, {
-    message: 'Please select at least one language.',
+    message: 'Por favor, selecione pelo menos um idioma.',
   }),
   categories: z.array(z.string()).min(1, {
-    message: 'Please select at least one category.',
+    message: 'Por favor, selecione pelo menos uma categoria.',
   }),
   subcategories: z.array(z.string()).min(1, {
-    message: 'Please select at least one subcategory.',
+    message: 'Por favor, selecione pelo menos uma subcategoria.',
   }),
   technicalDetails: z.string(),
   statistics: z.string(),
