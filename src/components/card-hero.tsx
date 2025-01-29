@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import Link from 'next/link'
 
 import { getRegisterForm } from '@/api/get-register-form'
 import type { Project } from '@/types/project'
@@ -70,12 +71,15 @@ export function CardHero({ projects }: CardHeroProps) {
                 </Badge>
               </div>
               <div className="space-y-5 gap-4 md:flex-row md:gap-6">
-                <Button
-                  className="w-full md:w-auto rounded-xl border border-custom-green text-custom-green hover:bg-green-50 hover:text-custom-green"
-                  variant="ghost"
-                >
-                  Ver mais detalhes
-                </Button>
+                <Link href={`/project/${project.id}`}>
+                  <Button
+                    className="w-full md:w-auto rounded-xl border border-custom-green text-custom-green hover:bg-green-50 hover:text-custom-green"
+                    variant="ghost"
+                  >
+                    Ver mais detalhes
+                  </Button>
+                </Link>
+
                 <Button className="w-full md:w-auto rounded-xl">
                   Ambiente Demonstração
                 </Button>
