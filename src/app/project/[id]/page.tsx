@@ -1,11 +1,24 @@
+'use client'
+
+import { ArrowLeftFromLine } from 'lucide-react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
 export default function ProjectDetails() {
   const { id } = useParams()
   return (
     <div className="h-screen flex flex-col gap-5 mx-10">
+      <div className="flex gap-3">
+        <Link href="/">
+          <Button variant="ghost">
+            <ArrowLeftFromLine />
+            Voltar
+          </Button>
+        </Link>
+      </div>
       <div className="flex flex-col items-center justify-center space-y-2">
         <h1 className="text-2xl text-custom-green font-bold ">
           Gestão de Varejo
