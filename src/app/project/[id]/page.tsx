@@ -42,7 +42,7 @@ export default function ProjectDetails() {
         </p>
       </div>
 
-      <div className="lg:flex space-y-6 lg:gap-6">
+      <div className="flex flex-col md:flex-row gap-5 mt-8">
         <Card className="">
           <CardHeader>
             <h1 className="text-xl font-semibold text-custom-green">
